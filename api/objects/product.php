@@ -33,4 +33,34 @@ class Product
 
       return $stmt;
    }
+
+   // create product
+   function create()
+   {
+      // query to insert record
+      $query = "INSERT INTO " . $this->table_name . " ( \"title\" , \"publisher\", \"releaseYear\", \"rating\")
+      VALUES (:title, :publisher, :releaseYear, :rating)";
+
+      // prepare query
+      $stmt = $this->conn->prepare($query);
+
+      // sanitize
+      $this->title = htmlspecialchars(strip_tags($this->title));
+      $this->publisher = htmlspecialchars(strip_tags($this->publisher));
+      $this->releaseYear = htmlspecialchars(strip_tags($this->releaseYear));
+      $this->rating = htmlspecialchars(strip_tags($this->rating));
+
+      // bind values
+      $stmt->bindParam(':title', $this->title);
+      $stmt->bindParam(':publisher', $this->publisher);
+      $stmt->bindParam(':releaseYear', $this->releaseYear);
+      $stmt->bindParam(':rating', $this->rating);
+
+      // execute query
+      if ($stmt->execute()) {
+         return true;
+      }
+
+      return false;
+   }
 }
